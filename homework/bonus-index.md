@@ -3,7 +3,7 @@
 数据：`hw_bonus`，20 万行。
 
 ```powershell
-docker compose run --rm grader sh -c "mysql -h mysql -uroot -phw_root -e 'source db/02_big.sql' hw_bonus"
+mysql -u root -p --default-character-set=utf8mb4 -e "source db/02_big.sql" hw_bonus
 ```
 
 大约半分钟到一分钟。加分部分不影响及格，做不完可以不做。

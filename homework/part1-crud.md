@@ -88,18 +88,20 @@ part1/06_q5.sql
 
 ## 三、本地自查
 
-```powershell
-docker compose run --rm grader python grader/run.py --part 1 --user 你的用户名
-```
+判分在 PR 上跑，交上去看 Summary 最准（每项都写清「应为多少、实际多少」）。
 
-只想看结果的话，手敲也行：
+DML 想先在本地看的话：
 
 ```sql
 USE hw_clean;
 -- 跑你的 01_dml.sql
-SELECT COUNT(*) FROM members;                 -- 17
-SELECT * FROM members WHERE student_id = '20230003';   -- score 80.00
+SELECT COUNT(*) FROM members;                          -- 17
+SELECT * FROM members WHERE student_id = '20230003';   -- score 应该是 80.00
+SELECT * FROM members WHERE student_id = '20230008';   -- 应该 0 行
 ```
+
+五条查询想对答案：跑完自己的，再跑一遍 `grader/solutions/part1_q1.sql` … `part1_q5.sql`，
+两个结果窗口对一眼，行数、顺序、列名都一样就对了。
 
 ## 四、判分
 

@@ -7,7 +7,7 @@
 
 ## 三步开始
 
-1. **装 MySQL**：看 [docs/00-环境搭建.md](docs/00-环境搭建.md)。用 Docker 的话只有一条命令。
+1. **装 MySQL**：看 [docs/00-环境搭建.md](docs/00-环境搭建.md)。装一次就行，不用 Docker。
 2. **读题**：[homework/README.md](homework/README.md)，里面是分值表和整体要求。
 3. **交作业**：[docs/01-提交与评测.md](docs/01-提交与评测.md)，fork、建分支、复制模板、写 SQL、发 PR。
 
@@ -49,21 +49,18 @@ submissions/<你的 GitHub 用户名>/
 评测用的是另一份数据，字段和规则完全一样，只是人名、分数、学号不同。
 **不要把某一行写死在 SQL 里**，评测库里没有你本地看到的那一行。
 
-## 本地自测
+## 本地怎么检查
 
-```powershell
-docker compose run --rm grader python grader/run.py --part 3
-```
+判分在 PR 上跑，**本地不用装 Docker、也不用装 Python**。
+交上去 1–2 分钟就能在 PR 里看到分数表，每项都写清了「应为多少、实际多少」。
 
-或者本机装好 Python 后：
+本地只想对答案的话：
 
-```powershell
-pip install -r grader/requirements.txt
-python grader/run.py --part 3
-```
+- 第 1、2 部分：跑完自己的查询，再跑一遍 `grader/solutions/` 里对应的参考查询，两个结果对一眼；
+- 第 3 部分：`db/99_check_part3.sql`，逐行对比，全对就没有输出；
+- 第 4 部分：`db/99_check_part4.sql`，看 7 行结构检查是不是全 `OK`。
 
-`--part` 可以是 `1` `2` `3` `4` `5` `bonus`，`all` 是全部。
-它跑的就是 CI 上那套评测，本地能过，提交上去就能过。
+用法见 [docs/00-环境搭建.md](docs/00-环境搭建.md) 第 4 节。
 
 ## 交完在哪看分数
 

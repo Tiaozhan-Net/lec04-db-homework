@@ -1,5 +1,5 @@
 -- 第 1 部分 / 四条 DML，按顺序执行
--- 自查：docker compose run --rm grader python grader/run.py --part 1 --user 你的用户名
+-- 自查：交 PR 看 Summary；本地想对答案就对着 grader/solutions/part1_q1.sql 跑一遍
 
 -- 1. 新增一条
 --    student_id=20239001, name=你的 GitHub 用户名, class_name=2024-1,

@@ -30,9 +30,10 @@ part2/q4_date.sql       q5_whitelist.sql   q6_sid.sql
 
 ## 本地自查
 
-```powershell
-docker compose run --rm grader python grader/run.py --part 2
-```
+判分在 PR 上跑，Summary 会写清「应为几行、第几行不对」，比本地看得还细。
+
+想先在本地对一遍：跑完自己的查询，再跑一遍 `grader/solutions/part2_q1.sql` … `part2_q6.sql`，
+两个结果窗口对一眼。
 
 ## 判分
 

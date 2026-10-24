@@ -76,9 +76,15 @@ FROM members LIMIT 1;
 
 ## 本地自查
 
+先跑 `part4/constraints.sql`，再看结构齐没齐：
+
 ```powershell
-docker compose run --rm grader python grader/run.py --part 4
+mysql -u root -p --default-character-set=utf8mb4 -e "source db/99_check_part4.sql"
 ```
+
+7 行结果全是 `OK` 就说明六列非空、唯一索引、两个类型、五个 CHECK 都在了。
+
+然后手动跑一遍 `errors.sql` 里的四条语句，看报出来的错误码对不对——这四行就是题目本身。
 
 ## 判分
 

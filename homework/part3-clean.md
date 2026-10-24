@@ -74,15 +74,18 @@
 
 ## 本地自查
 
+先把自己的 `clean.sql` 在 `hw_legacy` 上跑完，再逐行对比：
+
 ```powershell
-docker compose run --rm grader python grader/run.py --part 3
+mysql -u root -p --default-character-set=utf8mb4 -e "source db/99_check_part3.sql"
 ```
 
-想手看的话：
+明细为空就是全对；有输出的话，第一列会告诉你「只在你的表里 / 只在参考答案里 / 字段不一样」。
+
+只想看行数：
 
 ```sql
 USE hw_legacy;
-SOURCE submissions/<你的用户名>/part3/clean.sql;
 SELECT COUNT(*) FROM members;   -- 洗完应该是 14 行
 ```
 

@@ -48,15 +48,22 @@ submissions/<你的 GitHub 用户名>/
 评测用的是**另一份数据**：字段、规则、脏数据的种类完全一样，只是人名、学号、分数不同。
 所以不要把某一行的结果写死到 SQL 里，评测库里没有那一行。
 
-## 本地跑评测
+## 本地自查
+
+判分在 PR 上跑，本地不用装 Docker 或 Python。交上去看 Summary 最准。
+
+想先在本地对一眼：
 
 ```powershell
-docker compose up -d mysql
-docker compose run --rm grader python grader/run.py --part 3
+# 第 3 部分：逐行对比，全对就没有明细输出
+mysql -u root -p --default-character-set=utf8mb4 -e "source db/99_check_part3.sql"
+
+# 第 4 部分：7 行结构检查
+mysql -u root -p --default-character-set=utf8mb4 -e "source db/99_check_part4.sql"
 ```
 
-`--part` 可以写 `1` `2` `3` `4` `5` `bonus` `all`，也可以 `1,2`。
-第一次跑要等 MySQL 起来（`docker compose ps` 看到 healthy 就行）。
+第 1、2 部分对着 `grader/solutions/` 里的参考查询跑一遍，两个结果对一眼就行。
+详细步骤见 [docs/00-环境搭建.md](../docs/00-环境搭建.md)。
 
 ## 三条硬规则
 
