@@ -1,6 +1,6 @@
 -- 遗留版 members：第 2-5 部分使用（28 行，全列可空，无任何约束）
 -- 本地加载：
---   mysql -u root -p -e "source db/01_legacy.sql" hw_legacy
+--   mysql -u root -p --default-character-set=utf8mb4 -e "source db/01_legacy.sql" hw_legacy
 --
 -- 这份数据里有八类毛病，第 2 部分要你把它们找出来，第 3 部分要你洗干净：
 --   1. 学号为空 / 全空格 / 前后有空格

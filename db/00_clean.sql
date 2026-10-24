@@ -1,7 +1,7 @@
 -- 规范版 members：第 1 部分使用（14 行，有完整约束）
 -- 本地加载：
---   mysql -u root -p -e "source db/00_clean.sql" hw_clean
--- 说明：这个文件只负责建表 + 灌数据，库要先自己建好（见 docs/00-环境搭建.md）。
+--   mysql -u root -p --default-character-set=utf8mb4 -e "source db/00_clean.sql" hw_clean
+-- 说明：这个文件只负责建表 + 灌数据，库要先建好（见 README 的「开始」）。
 
 DROP TABLE IF EXISTS members;
 

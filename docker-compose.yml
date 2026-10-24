@@ -1,5 +1,4 @@
 # 只给维护者用：复现 CI 的 MySQL + 评测环境。
-# 学生不需要 Docker，本地装一个 MySQL 8.0.36 就够了（见 docs/00-环境搭建.md）。
 services:
   mysql:
     image: mysql:8.0.36

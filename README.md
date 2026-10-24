@@ -1,28 +1,40 @@
 # 数据库课后作业
 
-一次作业，一个业务对象：`members`（社团报名表）。
+一个业务对象：`members`（社团报名表）。
+5 个必做部分 + 1 个加分部分，用 GitHub PR 提交，自动评测。
 
-5 个必做部分 + 1 个加分部分，全部通过 GitHub PR 提交，自动评测。
-必做合计 100 分，**50 分及格**；做完第 1、2 部分就已经及格。
+需要 MySQL 8.0，`SELECT VERSION();` 确认。
 
-## 三步开始
+## 分值
 
-1. **装 MySQL**：看 [docs/00-环境搭建.md](docs/00-环境搭建.md)。装一次就行，不用 Docker。
-2. **读题**：[homework/README.md](homework/README.md)，里面是分值表和整体要求。
-3. **交作业**：[docs/01-提交与评测.md](docs/01-提交与评测.md)，fork、建分支、复制模板、写 SQL、发 PR。
+| Part | 主题 | 交什么 | 分值 | 建议时间 |
+| --- | --- | --- | ---: | ---: |
+| [1](homework/part1-crud.md) | 会用：增删改查 | 4 条 DML + 5 条查询 | 35 | 80 min |
+| [2](homework/part2-diagnose.md) | 看得懂：脏数据诊断 | 6 条只读查询 | 20 | 20 min |
+| [3](homework/part3-clean.md) | 洗得干净：清洗 | 1 个清洗脚本 | 25 | 30 min |
+| [4](homework/part4-constraints.md) | 拦得住：加约束与预测报错 | DDL + 4 条必错语句 | 10 | 25 min |
+| [5](homework/part5-softdelete.md) | 删得回来：软删除迁移 | 3 个脚本 | 10 | 20 min |
+| [B](homework/bonus-index.md) | 看得见：索引与执行计划 | 索引脚本 + 1 条查询 | +10 | 40 min |
 
-## 题目
+必做合计 100 分，**50 分及格**。
 
-| 文件 | 主题 | 分值 |
-| --- | --- | ---: |
-| [homework/part1-crud.md](homework/part1-crud.md) | 会用：增删改查与基础查询 | 35 |
-| [homework/part2-diagnose.md](homework/part2-diagnose.md) | 看得懂：脏数据诊断 | 20 |
-| [homework/part3-clean.md](homework/part3-clean.md) | 洗得干净：清洗（硬删除） | 25 |
-| [homework/part4-constraints.md](homework/part4-constraints.md) | 拦得住：加约束与预测报错 | 10 |
-| [homework/part5-softdelete.md](homework/part5-softdelete.md) | 删得回来：软删除迁移 | 10 |
-| [homework/bonus-index.md](homework/bonus-index.md) | 看得见：索引与执行计划 | +10 |
+第 1 + 2 部分共 55 分，做完这两部分即及格；第 3–5 部分决定分数高低；
+加分 10 分单独统计，不计入 100。
 
-## 提交目录
+每个部分独立判分，前一部分没写完，后面照样能拿分。
+
+## 开始
+
+1. 建练习库（只做一次）：
+
+   ```powershell
+   mysql -u root -p --default-character-set=utf8mb4 -e "source db/99_reset.sql"
+   ```
+
+2. 从[第 1 部分](homework/part1-crud.md)开始。每篇开头都写了用哪张表、怎么准备。
+3. 写完提交，见[提交与评测](docs/01-提交与评测.md)。
+
+## 交到哪
 
 ```text
 submissions/<你的 GitHub 用户名>/
@@ -34,34 +46,14 @@ submissions/<你的 GitHub 用户名>/
 └─ bonus/  b1_functional_key.sql  b2_indexes.sql
 ```
 
-只交 `.sql`，不写文字说明。没做的部分可以不建目录，那部分就是 0 分，不会影响其他部分。
+模板在 `homework/templates/`，文件名不要改。没做的部分不用建目录，那部分是 0 分。
 
-## 数据
+## 去哪看分
 
-| 文件 | 用在 | 本地库名 |
-| --- | --- | --- |
-| `db/00_clean.sql` | 第 1 部分 | `hw_clean` |
-| `db/01_legacy.sql` | 第 2–5 部分 | `hw_legacy` |
-| `db/02_big.sql` | 加分部分 | `hw_bonus` |
+PR 页面的 **Checks → autograde → Summary**。每次 push 自动重跑，分数以最后一次为准。
 
-一键重置前两个库：见 [docs/00-环境搭建.md](docs/00-环境搭建.md)。
+## 三条规则
 
-评测用的是另一份数据，字段和规则完全一样，只是人名、分数、学号不同。
-**不要把某一行写死在 SQL 里**，评测库里没有你本地看到的那一行。
-
-## 本地怎么检查
-
-判分在 PR 上跑，**本地不用装 Docker、也不用装 Python**。
-交上去 1–2 分钟就能在 PR 里看到分数表，每项都写清了「应为多少、实际多少」。
-
-本地只想对答案的话：
-
-- 第 1、2 部分：跑完自己的查询，再跑一遍 `grader/solutions/` 里对应的参考查询，两个结果对一眼；
-- 第 3 部分：`db/99_check_part3.sql`，逐行对比，全对就没有输出；
-- 第 4 部分：`db/99_check_part4.sql`，看 7 行结构检查是不是全 `OK`。
-
-用法见 [docs/00-环境搭建.md](docs/00-环境搭建.md) 第 4 节。
-
-## 交完在哪看分数
-
-PR 页面的 **Checks → autograde → Summary**。每次 push 都会重跑，分数以最后一次为准。
+1. 只改 `submissions/<你的用户名>/` 下的文件。
+2. 不写 `DROP TABLE`、`TRUNCATE`，不建新表再改名。
+3. 一个 PR 只提交一个人的作业。

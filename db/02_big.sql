@@ -1,6 +1,6 @@
 -- 加分部分用的 20 万行数据（第 5 部分完成后的表结构：有 deleted_at，有函数唯一索引）
 -- 本地加载：
---   mysql -u root -p -e "source db/02_big.sql" hw_bonus
+--   mysql -u root -p --default-character-set=utf8mb4 -e "source db/02_big.sql" hw_bonus
 -- 大约需要 20-60 秒，只在做加分题时才需要跑。
 
 SET SESSION cte_max_recursion_depth = 300000;

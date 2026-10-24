@@ -1,22 +1,38 @@
 # 第 3 部分 洗得干净：清洗（25 分）
 
-数据：`hw_legacy`（28 行脏数据）。
-交一个文件：`part3/clean.sql`，把这张表洗成「能直接加约束」的样子。
+## 1. 数据与准备
 
-只能 `UPDATE` 和 `DELETE`，**原地清洗**：
+- 表：`hw_legacy.members`，28 行脏数据。
+- 第一次（练习库还没建）：
 
-- 不许 `DROP TABLE`
-- 不许 `TRUNCATE`
-- 不许建新表再改名、不许 `CREATE TABLE ... AS SELECT`
+  ```powershell
+  mysql -u root -p --default-character-set=utf8mb4 -e "source db/99_reset.sql"
+  ```
 
-## 洗完必须满足
+- 每次重来：
+
+  ```powershell
+  mysql -u root -p --default-character-set=utf8mb4 -e "source db/01_legacy.sql" hw_legacy
+  ```
+
+## 2. 要做什么
+
+交一个清洗脚本，把这张表洗成能直接加约束的样子。
+
+只用 `UPDATE` 和 `DELETE`，原地清洗：
+
+- 不写 `DROP TABLE`
+- 不写 `TRUNCATE`
+- 不建新表再改名，不写 `CREATE TABLE ... AS SELECT`
+
+洗完必须满足下面这些。
 
 ### 学号
 
 | 现在 | 洗完 |
 | --- | --- |
 | 是 `NULL`、空串、或者全是空格 | 这一行删掉 |
-| 前后有空格，但去掉空格后是 8 位数字 | 保留，并把学号存成去掉空格后的值 |
+| 前后有空格，去掉后是 8 位数字 | 保留，并写回去掉空格后的值 |
 | 去掉空格后不是 8 位数字（含字母、7 位、9 位） | 这一行删掉 |
 
 ### 姓名
@@ -36,7 +52,7 @@
 | `2023级1班` | `2023-1` |
 | `2023 1班` | `2023-1` |
 
-规则就是「四位年份 + `-` + 班号」，别的班级同理。洗完只留 `YYYY-N` 这种形式。
+规则是「四位年份 + `-` + 班号」，其他班级同理。洗完只留 `YYYY-N` 这种形式。
 
 ### 专业
 
@@ -55,7 +71,7 @@
 | `NULL` | `0` |
 | 小于 0 | `0` |
 | 大于 100 | `100` |
-| 0–100 之间 | 不动 |
+| 0 到 100 之间 | 不动 |
 
 ### 报名时间
 
@@ -69,29 +85,18 @@
 
 ### 学号重复
 
-同一个学号有多条记录时，**只留报名时间最早的那一条**；
+同一个学号有多条记录时，只留报名时间最早的那一条；
 报名时间也一样的，留 `id` 小的那一条。
 
-## 本地自查
+## 3. 交什么
 
-先把自己的 `clean.sql` 在 `hw_legacy` 上跑完，再逐行对比：
-
-```powershell
-mysql -u root -p --default-character-set=utf8mb4 -e "source db/99_check_part3.sql"
+```text
+part3/clean.sql
 ```
 
-明细为空就是全对；有输出的话，第一列会告诉你「只在你的表里 / 只在参考答案里 / 字段不一样」。
+模板在 `homework/templates/part3/`。
 
-只想看行数：
-
-```sql
-USE hw_legacy;
-SELECT COUNT(*) FROM members;   -- 洗完应该是 14 行
-```
-
-## 判分
-
-看**洗完以后的表**，不看你的 SQL 长什么样。
+## 4. 怎么评测
 
 | 项目 | 分值 |
 | --- | ---: |
@@ -102,6 +107,14 @@ SELECT COUNT(*) FROM members;   -- 洗完应该是 14 行
 | 分数 | 3 |
 | 报名时间 | 3 |
 
-每个维度都要**全部行都对**才给分。行数不对的话，其余维度也拿不到。
+- 看洗完以后的表，不看 SQL 文本。
+- 每个维度要全部行都对才给分；行数不对，其余维度也拿不到。
+- 评测用另一份数据，脏数据的种类和位置相同，人名、分数不同。
+- 本地对比：先把 `clean.sql` 跑完，再执行
 
-参考解在 `grader/solutions/part3_clean.sql`，写完可以对照。
+  ```powershell
+  mysql -u root -p --default-character-set=utf8mb4 -e "source db/99_check_part3.sql"
+  ```
+
+  明细为空就是全对；有输出会标明「只在你的表里 / 只在参考答案里 / 字段不一样」。
+- 提交后看 PR 的 Summary。

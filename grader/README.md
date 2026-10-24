@@ -1,10 +1,8 @@
 # 评测脚本
 
-学生不用读这个目录，这里只是给维护者看的。
-学生本地不需要 Docker、也不需要 Python —— 判分在 GitHub 上跑。
+学生不用读这个目录。
 
-根目录的 `docker-compose.yml` 和这个目录下的 `Dockerfile` 只在这里用：
-复现 CI 那套 MySQL + 评测环境。
+根目录的 `docker-compose.yml` 和这个目录下的 `Dockerfile` 用来复现 CI 的 MySQL + 评测环境。
 
 ```text
 grader/

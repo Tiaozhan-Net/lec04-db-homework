@@ -1,36 +1,35 @@
 # 第 5 部分 删得回来：软删除迁移（10 分）
 
-起点：第 4 部分做完的表（已经洗干净、已经加好约束）。
+## 1. 数据与准备
 
-三个文件，**按 05a → 05b → 05c 的顺序**执行：
+- 表：`hw_legacy.members`，第 4 部分做完的终态（已清洗、已加约束）。
+- 准备：三条依次执行（`<你的用户名>` 换成自己的）。
 
-```text
-part5/05a_softdelete.sql
-part5/05b_migrate.sql
-part5/05c_reinsert.sql
-```
+  ```powershell
+  mysql -u root -p --default-character-set=utf8mb4 -e "source db/01_legacy.sql" hw_legacy
+  mysql -u root -p --default-character-set=utf8mb4 -e "source submissions/<你的用户名>/part3/clean.sql" hw_legacy
+  mysql -u root -p --default-character-set=utf8mb4 -e "source submissions/<你的用户名>/part4/constraints.sql" hw_legacy
+  ```
 
----
+  加列和加索引都不能重复执行，每次改完要重来，都从这三条开始。
+  自己写的那两条还没跑通的话，用 `grader/solutions/part3_clean.sql` 和 `part4_constraints.sql` 代替。
 
-## `05a_softdelete.sql`：加列 + 改成软删除
+## 2. 要做什么
 
-1. 给 `members` 加一列：
+三个文件，按 `05a` → `05b` → `05c` 的顺序执行。
 
-   ```text
-   deleted_at DATETIME(3) NULL
-   ```
+### `05a_softdelete.sql` 加列 + 改成软删除
 
-2. 学号 `20230002` 的同学取消报名。
-   这一次**不要 `DELETE`**，改成把 `deleted_at` 写成当前时间（`NOW(3)`）。
+1. 给 `members` 加一列 `deleted_at DATETIME(3) NULL`。
+2. 学号 `20230002` 的同学取消报名。这一次不写 `DELETE`，改成把 `deleted_at` 写成当前时间 `NOW(3)`。
 
-做完之后：表里还是 14 行，其中 13 行是活跃的。
+做完之后：表里还是 14 行，其中 13 行活跃。
 
-## `05b_migrate.sql`：把唯一索引改成"活跃才唯一"
+### `05b_migrate.sql` 把唯一索引改成「活跃才唯一」
 
-现在 `uk_student_id` 是「学号唯一」，所以一个学号被软删除之后，这个人就再也报不上名了。
+现在 `uk_student_id` 是「学号唯一」，一个学号被软删除之后，这个人就再也报不上名。
 
-改成：**同一个学号最多只能有一条活跃记录**，软删除的记录不占位。
-索引名还叫 `uk_student_id`。
+改成：同一个学号最多只能有一条活跃记录，软删除的记录不占位。索引名还叫 `uk_student_id`。
 
 改完以后，下面四件事应该成立：
 
@@ -41,36 +40,33 @@ part5/05c_reinsert.sql
 | 把旧的已删除记录恢复成活跃，而新的还在 | 报 `1062` |
 | 两条都已软删除 | 允许 |
 
-## `05c_reinsert.sql`：重新报名
+### `05c_reinsert.sql` 重新报名
 
-用学号 `20230002` 再报一次名，**必须成功**，其余字段自己给合法值。
+用学号 `20230002` 再报一次名，必须成功，其余字段自己给合法值。
 
----
+## 3. 交什么
 
-## 本地自查
+```text
+part5/05a_softdelete.sql
+part5/05b_migrate.sql
+part5/05c_reinsert.sql
+```
 
-按顺序跑完 `05a` → `05b` → `05c`，然后在 Workbench 的查询窗口里手动试这四件事
-（每试完一条记得撤销，或者重新跑一遍三个脚本）：
+模板在 `homework/templates/part5/`。
 
-| 做什么 | 期望 |
-| --- | --- |
-| 插一条活跃记录，学号和某条已有活跃记录相同 | `1062` |
-| 把某条活跃记录的 `deleted_at` 设成 `NOW(3)`，再插同号活跃记录 | 成功 |
-| 上一步插完之后，把旧行的 `deleted_at` 改回 `NULL` | `1062` |
-| 把两条都软删除，再插一条同号活跃记录 | 成功 |
-
-四条都对，第 5 部分的行为测试就都过了。
-
-## 判分
+## 4. 怎么评测
 
 | 项目 | 分值 |
 | --- | ---: |
 | `05a` 加了 `deleted_at` 列 | 1 |
 | `05a` 指定的那条被软删除 | 1 |
-| `05a` 其余行没被动（还是 14 行、13 条活跃） | 1 |
+| `05a` 其余行没被动（14 行，13 条活跃） | 1 |
 | `05b` 两段唯一索引生效 | 2 |
 | `05b` 同号新活跃行能插进去 | 1 |
 | `05c` 重新报名成功 | 2 |
 | 恢复旧行时报 `1062` | 2 |
 
-不比对 SQL 文本，只看结构和行为。每一步都在事务里测试，测完会回滚。
+- 不比对 SQL 文本，只看结构和行为。每一步都在事务里测，测完回滚。
+- 评测从参考解做好的表开始，所以第 3、4 部分没写完也能做这一部分。
+- 本地手测：按顺序跑完三个文件，再在查询窗口里试上表那四种情况。
+- 提交后看 PR 的 Summary。

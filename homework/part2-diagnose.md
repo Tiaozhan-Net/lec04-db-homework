@@ -1,13 +1,23 @@
 # 第 2 部分 看得懂：脏数据诊断（20 分）
 
-数据：`hw_legacy`（28 行，全列可空，没有任何约束）。
+## 1. 数据与准备
 
-交 6 个文件，**一个文件一条 `SELECT`**，只读，不许改数据：
+- 表：`hw_legacy.members`，28 行，全列可空、没有任何约束，里面有 8 类脏数据。
+- 第一次（练习库还没建）：
 
-```text
-part2/q1_dup.sql        q2_name.sql        q3_score.sql
-part2/q4_date.sql       q5_whitelist.sql   q6_sid.sql
-```
+  ```powershell
+  mysql -u root -p --default-character-set=utf8mb4 -e "source db/99_reset.sql"
+  ```
+
+- 每次重来（只重置这张表）：
+
+  ```powershell
+  mysql -u root -p --default-character-set=utf8mb4 -e "source db/01_legacy.sql" hw_legacy
+  ```
+
+## 2. 要做什么
+
+六个文件，一个文件一条 `SELECT`，只读，不改数据。
 
 | 文件 | 查什么 | 输出列 | 排序 |
 | --- | --- | --- | --- |
@@ -18,27 +28,33 @@ part2/q4_date.sql       q5_whitelist.sql   q6_sid.sql
 | `q5_whitelist.sql` | 专业或班级不在白名单里 | `id`, `major`, `class_name` | `id ASC` |
 | `q6_sid.sql` | 学号不是 8 位数字 | `id`, `student_id` | `id ASC` |
 
-## 几个约定
+约定：
 
-- `cnt` 用 `COUNT(*) AS cnt`；
+- `cnt` 写 `COUNT(*) AS cnt`；
 - `len` 是 `CHAR_LENGTH(name)` 的别名，写 `CHAR_LENGTH(name) AS len`；
-- **空学号不算重复**：`NULL`、空串、全是空格的学号先排除，再找重复；
-- 判断学号是不是 8 位数字之前，先 `TRIM`（前后有空格不算错，见第 3 部分）；
-- 白名单：
-  - 专业：`计算机科学与技术`、`软件工程`、`数据科学与大数据技术`
-  - 班级：形如 `2023-1`，四位年份 + 短横线 + 一位班号。
+- 空学号不算重复：`NULL`、空串、全空格先排除，再找重复；
+- 判断学号是不是 8 位数字之前，先 `TRIM`；
+- 白名单：专业是 `计算机科学与技术`、`软件工程`、`数据科学与大数据技术`；
+  班级形如 `2023-1`，四位年份、短横线、一位班号。
 
-## 本地自查
+## 3. 交什么
 
-判分在 PR 上跑，Summary 会写清「应为几行、第几行不对」，比本地看得还细。
+```text
+part2/q1_dup.sql   q2_name.sql   q3_score.sql
+part2/q4_date.sql  q5_whitelist.sql  q6_sid.sql
+```
 
-想先在本地对一遍：跑完自己的查询，再跑一遍 `grader/solutions/part2_q1.sql` … `part2_q6.sql`，
-两个结果窗口对一眼。
+模板在 `homework/templates/part2/`。
 
-## 判分
+## 4. 怎么评测
 
-- 6 条各 3 分，共 18 分；
-- 6 条全对再加 2 分，共 20 分；
-- 比对列名、行、顺序，三种都对才给分。
+| 项目 | 分值 |
+| --- | ---: |
+| 六条查询 | 3 × 6 |
+| 六条全对 | 2 |
 
-只查不改。文件里出现 `UPDATE` / `DELETE` / `INSERT` 一律 0 分。
+- 比对列名、行、顺序，三项全对才给分。
+- 文件里出现 `UPDATE`、`DELETE`、`INSERT` 一律 0 分。
+- 评测用另一份数据，脏数据的种类和位置相同，人名、分数不同。
+- 本地对答案：跑完自己的查询，再跑 `grader/solutions/part2_q1.sql` 到 `part2_q6.sql`，结果一致就是对的。
+- 提交后看 PR 的 Summary。
