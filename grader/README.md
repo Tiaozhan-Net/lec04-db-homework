@@ -29,6 +29,12 @@ python grader/run.py --part 3 --user 你的用户名
 
 `--part` 可以是 `1` `2` `3` `4` `5` `bonus` `all`，也可以 `1,2`。
 
+评测会在 MySQL 里建一批 `hw_*` 库，跑完想清掉：
+
+```powershell
+mysql -u root -p --default-character-set=utf8mb4 -e "source db/99_cleanup.sql"
+```
+
 ## 判分结构
 
 | Part | 库 | 起点 | 判什么 |

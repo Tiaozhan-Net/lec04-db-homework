@@ -57,3 +57,13 @@ PR 页面的 **Checks → autograde → Summary**。每次 push 自动重跑，�
 1. 只改 `submissions/<你的用户名>/` 下的文件。
 2. 不写 `DROP TABLE`、`TRUNCATE`，不建新表再改名。
 3. 一个 PR 只提交一个人的作业。
+
+## 清空练习环境
+
+想从零再来一遍，或者做完不想留库：
+
+```powershell
+mysql -u root -p --default-character-set=utf8mb4 -e "source db/99_cleanup.sql"
+```
+
+只删 `hw_` 开头的作业库，系统库和别的库不动。之后按「开始」第 1 步重新建库。
