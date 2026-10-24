@@ -45,7 +45,7 @@
 
 改列定义用 `MODIFY COLUMN`。MySQL 没有 `ALTER COLUMN ... SET NOT NULL` 这种写法。
 
-> **讲义没讲：** 改列定义的完整写法是 `ALTER TABLE members MODIFY COLUMN joined_at DATETIME(3) NOT NULL;`，一个 `ALTER TABLE` 里可以用逗号连写多个 `MODIFY COLUMN`。
+> 改列定义的完整写法是 `ALTER TABLE members MODIFY COLUMN joined_at DATETIME(3) NOT NULL;`，一个 `ALTER TABLE` 里可以用逗号连写多个 `MODIFY COLUMN`。
 
 #### 五个 CHECK
 
@@ -57,7 +57,7 @@
 | 专业在白名单 | `major IN ('计算机科学与技术', '软件工程', '数据科学与大数据技术')` |
 | 班级格式 | `class_name REGEXP '^[0-9]{4}-[1-9]$'` |
 
-> **讲义没讲：** `CHECK (表达式)` 是给列加的业务规则，插入或更新不满足就报 3819。建好表之后用 `ALTER TABLE ... ADD CONSTRAINT 约束名 CHECK (...)` 加上。
+> `CHECK (表达式)` 是给列加的业务规则，插入或更新不满足就报 3819。建好表之后用 `ALTER TABLE ... ADD CONSTRAINT 约束名 CHECK (...)` 加上。
 
 ### 3.2 `errors.sql`
 
