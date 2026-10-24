@@ -55,6 +55,8 @@ def _dml(ctx: Ctx) -> list[Item]:
     conn = db.fresh_db("hw_p1_dml")
     try:
         db.load(conn, ctx.db_file("00_clean.sql"))
+        # 同一批人，自增 id 从 101 开始：把 id 写死在 DML 里的会删错行 / 改错行。
+        db.load(conn, ctx.fixture("clean_shifted.sql"))
         try:
             db.run_statements(conn, read_text(path))
         except db.ScriptError as exc:

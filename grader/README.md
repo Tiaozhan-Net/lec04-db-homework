@@ -10,7 +10,7 @@ grader/
 ├─ db.py             连接、会话口径、脚本执行、结果规范化
 ├─ sqltext.py        去注释、切语句
 ├─ checks/part1..5.py, bonus.py
-├─ fixtures/         评测用的两份数据（与 db/ 下的练习数据不同）
+├─ fixtures/         评测用的数据（和 db/ 下的练习数据不同）
 └─ solutions/        参考解
 ```
 
