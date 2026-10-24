@@ -1,0 +1,12 @@
+-- 第 4 部分 / DDL
+-- 起点：第 3 部分洗完的表
+--
+-- 1. 六列 NOT NULL：student_id, name, class_name, major, score, joined_at
+-- 2. 学号唯一，索引名必须是 uk_student_id
+-- 3. joined_at -> DATETIME(3)，score -> DECIMAL(5,2)
+-- 4. 五个 CHECK：
+--    姓名 TRIM 后非空、分数 0-100、学号 8 位数字、专业白名单、班级 YYYY-N
+--
+-- 提示：MySQL 用 MODIFY COLUMN，没有 SET NOT NULL
+-- 自查：docker compose run --rm grader python grader/run.py --part 4
+

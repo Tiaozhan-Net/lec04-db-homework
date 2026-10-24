@@ -1,0 +1,5 @@
+-- 第 1 部分 / Q1 条件 + 排序 + 截断
+-- 分数 >= 85
+-- 输出列：name, score
+-- 排序：score DESC, student_id ASC
+-- 只要前 5 条

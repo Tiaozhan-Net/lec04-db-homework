@@ -1,0 +1,4 @@
+-- 第 1 部分 / Q3 分数最高的 3 位
+-- 输出列：name, score
+-- 排序：score DESC, student_id ASC
+-- 只要前 3 条

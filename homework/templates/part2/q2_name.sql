@@ -1,0 +1,4 @@
+-- 第 2 部分 / Q2 姓名不干净
+-- 姓名为空、全是空格、前后有空格
+-- 输出列：id, name, len   （len = CHAR_LENGTH(name)）
+-- 排序：id ASC

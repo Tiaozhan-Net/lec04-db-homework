@@ -1,0 +1,120 @@
+name: autograde
+
+on:
+  pull_request:
+    paths:
+      - "submissions/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: autograde-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  grade:
+    name: autograde
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      mysql:
+        image: mysql:8.0.36
+        env:
+          MYSQL_ROOT_PASSWORD: hw_root
+          MYSQL_ROOT_HOST: "%"
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -phw_root"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=40
+
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Guard
+        id: guard
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags origin "$BASE_REF"
+          base=$(git merge-base "origin/$BASE_REF" HEAD)
+          changed=$(git diff --name-only "$base" HEAD)
+
+          if [ -z "$changed" ]; then
+            echo "::error::这个 PR 没有修改任何文件"
+            exit 1
+          fi
+
+          echo "改动文件："
+          echo "$changed"
+
+          if echo "$changed" | grep -vE '^submissions/[^/]+/.+$' ; then
+            echo "::error::只允许修改 submissions/<你的 GitHub 用户名>/ 下面的文件"
+            exit 1
+          fi
+
+          students=$(echo "$changed" | cut -d/ -f2 | sort -u)
+          if [ "$(echo "$students" | wc -l)" -ne 1 ]; then
+            echo "::error::一次 PR 只能交一个人的作业"
+            exit 1
+          fi
+
+          student="$students"
+          author_lower=$(echo "$PR_AUTHOR" | tr '[:upper:]' '[:lower:]')
+          student_lower=$(echo "$student" | tr '[:upper:]' '[:lower:]')
+          if [ "$student_lower" != "$author_lower" ]; then
+            echo "::error::目录名必须是 PR 作者的 GitHub 用户名：$PR_AUTHOR"
+            exit 1
+          fi
+
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            [ -f "$file" ] || continue
+            if [ "$(wc -c < "$file")" -gt 65536 ]; then
+              echo "::error::$file 超过 64 KB"
+              exit 1
+            fi
+            # 去掉行注释再检查：模板注释里会写"不要 DROP TABLE"，不能误伤。
+            if sed 's/--.*$//' "$file" | grep -iqE 'drop[[:space:]]+(database|table)|truncate[[:space:]]|into[[:space:]]+outfile|load_file[[:space:]]*\(' ; then
+              echo "::error::$file 里有被禁止的语句（DROP TABLE / DROP DATABASE / TRUNCATE / OUTFILE / LOAD_FILE）"
+              exit 1
+            fi
+          done <<< "$changed"
+
+          for part in part1 part2 part3 part4 part5 bonus; do
+            if [ ! -d "submissions/$student/$part" ]; then
+              echo "::warning::没有交 $part，这部分会是 0 分（不影响其他部分）"
+            fi
+          done
+
+          echo "submission=submissions/$student" >> "$GITHUB_OUTPUT"
+          echo "student=$student" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r grader/requirements.txt
+
+      - name: Grade
+        env:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PORT: "3306"
+          MYSQL_USER: root
+          MYSQL_PASSWORD: hw_root
+          GITHUB_USER: ${{ steps.guard.outputs.student }}
+          SUBMISSION_DIR: ${{ steps.guard.outputs.submission }}
+        run: python grader/run.py --part all

@@ -1,0 +1,4 @@
+-- 第 2 部分 / Q1 重复学号
+-- 输出列：student_id, cnt
+-- 排序：cnt DESC, student_id ASC
+-- 空学号（NULL / 空串 / 全空格）不算重复

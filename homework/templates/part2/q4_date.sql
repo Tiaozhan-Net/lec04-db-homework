@@ -1,0 +1,4 @@
+-- 第 2 部分 / Q4 报名时间格式不对
+-- 不是 YYYY-MM-DD HH:MM:SS
+-- 输出列：id, joined_at
+-- 排序：id ASC

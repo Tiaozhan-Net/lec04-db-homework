@@ -1,0 +1,12 @@
+-- 加分 B2 / 索引脚本
+-- 数据：hw_bonus（20 万行），只写 CREATE INDEX
+-- 最多新建 3 个索引；第 1 条查询用现成的唯一索引，不要新建
+--
+-- 四条查询：
+--   1) WHERE student_id = '90000001' AND deleted_at IS NULL
+--   2) WHERE major = '计算机科学与技术' AND score >= 60 ORDER BY score DESC LIMIT 20
+--   3) WHERE class_name = '2023-1' ORDER BY joined_at
+--   4) WHERE major = '软件工程' AND name LIKE '张%'
+--
+-- 要求：每条都走索引，且没有 filesort
+

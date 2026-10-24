@@ -1,0 +1,39 @@
+services:
+  mysql:
+    image: mysql:8.0.36
+    container_name: db-hw-mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+      - --sql-mode=ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+      - --default-time-zone=+00:00
+    environment:
+      MYSQL_ROOT_PASSWORD: hw_root
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3306:3306"
+    volumes:
+      - hw-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-phw_root"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  grader:
+    build: ./grader
+    profiles: ["grade"]
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_USER: root
+      MYSQL_PASSWORD: hw_root
+    volumes:
+      - .:/work
+    working_dir: /work
+
+volumes:
+  hw-mysql-data:

@@ -1,0 +1,4 @@
+-- 第 1 部分 / Q5 分组计数
+-- 每个专业各有多少人
+-- 输出列：major, cnt
+-- 排序：cnt DESC, major ASC
