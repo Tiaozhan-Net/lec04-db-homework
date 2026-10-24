@@ -36,6 +36,8 @@
 
 `deleted_at IS NULL` 和函数键是两回事，MySQL 不会自动把它们认成同一个东西。
 
+讲义 7.4 末尾讲过 `EXPLAIN FORMAT=JSON` 里怎么看 `key`、`key_len` 和 `used_key_parts`。
+
 ### 3.2 B2 索引预算
 
 只写 `CREATE INDEX`，最多新建三个索引。表上有这四条查询，评测时参数固定：
