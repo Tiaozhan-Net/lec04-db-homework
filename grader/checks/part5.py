@@ -14,7 +14,7 @@ TARGET_SID = "20230002"
 
 INSERT_ACTIVE = (
     "INSERT INTO members (student_id, name, class_name, major, score, joined_at)"
-    " VALUES (%s, %s, '2023-1', '软件工程', 60.00, '2025-12-01 00:00:00')"
+    " VALUES ('%s', '%s', '2023-1', '软件工程', 60.00, '2025-12-01 00:00:00')"
 )
 
 
@@ -45,13 +45,24 @@ def run(ctx: Ctx) -> list[Item]:
                     0,
                 )
             )
+        elif probe[0] != 1062:
+            items.append(
+                Item(
+                    PART,
+                    "（不计分）迁移前插同号活跃行",
+                    False,
+                    f"按预期应该报 1062，实际是 {probe[0]}：{probe[1]}",
+                    0,
+                    0,
+                )
+            )
         else:
             items.append(
                 Item(
                     PART,
                     "（不计分）迁移前插同号活跃行",
                     True,
-                    f"按预期报了 {probe[0]}，旧行还占着学号——这就是下面要解决的问题",
+                    "按预期报了 1062，旧行还占着学号——这就是下面要解决的问题",
                     0,
                     0,
                 )

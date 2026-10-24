@@ -44,16 +44,14 @@ WHERE NOT (
   AND a.joined_at   <=> b.joined_at
 );
 
-SELECT
-  (SELECT COUNT(*) FROM hw_legacy.members) AS 你的行数,
-  (SELECT COUNT(*) FROM hw_check.members)  AS 参考答案行数,
-  (SELECT COUNT(*) FROM t_diff)            AS 明细条数,
+SELECT 你的行数, 参考答案行数, 明细条数,
   CASE
-    WHEN (SELECT COUNT(*) FROM hw_legacy.members) <> (SELECT COUNT(*) FROM hw_check.members)
-      THEN '行数就不对，先看行数'
-    WHEN (SELECT COUNT(*) FROM t_diff) = 0
-      THEN '全对'
+    WHEN 你的行数 <> 参考答案行数 THEN '行数就不对，先看行数'
+    WHEN 明细条数 = 0 THEN '全对'
     ELSE '有差异，看下面明细'
-  END AS 结论;
+  END AS 结论
+FROM (SELECT COUNT(*) AS 你的行数 FROM hw_legacy.members) a
+CROSS JOIN (SELECT COUNT(*) AS 参考答案行数 FROM hw_check.members) b
+CROSS JOIN (SELECT COUNT(*) AS 明细条数 FROM t_diff) d;
 
 SELECT * FROM t_diff;

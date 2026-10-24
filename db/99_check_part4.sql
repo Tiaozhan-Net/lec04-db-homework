@@ -20,7 +20,7 @@ CREATE TEMPORARY TABLE t_check (
 
 INSERT INTO t_check
 SELECT '六列 NOT NULL',
-       CONCAT(SUM(IS_NULLABLE = 'NO'), ' / 6 列可空吗'),
+       CONCAT(SUM(IS_NULLABLE = 'NO'), ' / 6 列都是 NOT NULL'),
        IF(SUM(IS_NULLABLE = 'NO') = 6, 'OK', '还差')
 FROM information_schema.COLUMNS
 WHERE TABLE_SCHEMA = 'hw_legacy'

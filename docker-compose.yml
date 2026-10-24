@@ -1,7 +1,7 @@
 # 只给维护者用：复现 CI 的 MySQL + 评测环境。
 services:
   mysql:
-    image: mysql:8.0.36
+    image: mysql:8.0.44
     container_name: db-hw-mysql
     command:
       - --character-set-server=utf8mb4

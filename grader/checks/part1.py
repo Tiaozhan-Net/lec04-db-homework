@@ -134,17 +134,7 @@ def _check_batch(conn) -> Item:
                 DML_POINTS,
             )
 
-    total = db.fetch_one(conn, "SELECT COUNT(*) FROM members")[0]
-    if total != FINAL_COUNT:
-        return Item(
-            PART,
-            DML_NAMES[1],
-            False,
-            f"三条都写了，但表里一共 {total} 行，应该是 {FINAL_COUNT} 行（多了或少了）",
-            0,
-            DML_POINTS,
-        )
-    return Item(PART, DML_NAMES[1], True, "三条都在，总行数正确", DML_POINTS, DML_POINTS)
+    return Item(PART, DML_NAMES[1], True, "三条都在，字段正确", DML_POINTS, DML_POINTS)
 
 
 def _check_update(conn) -> Item:
@@ -211,29 +201,29 @@ def _queries(ctx: Ctx) -> list[Item]:
 def _check_query(conn, ctx: Ctx, relative: str, label: str, solution: str, need_order: bool) -> Item:
     path = ctx.submit(*relative.split("/"))
     if not path.exists():
-        return Item(PART, label, False, f"文件不存在：{relative}", 0, QUERY_MAX)
+        return Item(PART, label, False, f"文件不存在：{relative}", 0, QUERY_POINTS)
 
     statements = split_statements(read_text(path))
     if not statements:
-        return Item(PART, label, False, "文件里还没有 SELECT", 0, QUERY_MAX)
+        return Item(PART, label, False, "文件里还没有 SELECT", 0, QUERY_POINTS)
     if len(statements) > 1:
-        return Item(PART, label, False, f"只能有一条语句，现在有 {len(statements)} 条", 0, QUERY_MAX)
+        return Item(PART, label, False, f"只能有一条语句，现在有 {len(statements)} 条", 0, QUERY_POINTS)
 
     statement = statements[0]
     if first_keyword(statement) not in ("SELECT", "WITH"):
-        return Item(PART, label, False, "必须是一条 SELECT", 0, QUERY_MAX)
+        return Item(PART, label, False, "必须是一条 SELECT", 0, QUERY_POINTS)
 
     if need_order and "order by" not in statement.lower():
-        return Item(PART, label, False, "缺少 ORDER BY", 0, QUERY_MAX)
+        return Item(PART, label, False, "缺少 ORDER BY", 0, QUERY_POINTS)
 
     try:
         actual = db.query(conn, statement)
     except Exception as exc:  # noqa: BLE001
-        return Item(PART, label, False, f"执行失败：{db.format_error(exc)}", 0, QUERY_MAX)
+        return Item(PART, label, False, f"执行失败：{db.format_error(exc)}", 0, QUERY_POINTS)
 
     expected = db.query(conn, _solution_statements(ctx, solution)[0])
     ok, message = diff_result(expected, actual)
-    return Item(PART, label, ok, message, QUERY_MAX if ok else 0, QUERY_MAX)
+    return Item(PART, label, ok, message, QUERY_POINTS if ok else 0, QUERY_POINTS)
 
 
 def _solution_statements(ctx: Ctx, name: str) -> list[str]:

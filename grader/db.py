@@ -41,6 +41,8 @@ class ScriptError(Exception):
         super().__init__(format_error(original))
 
     def detail(self) -> str:
+        if self.index == 0:
+            return str(self.original)
         preview = " ".join(self.statement.split())
         if len(preview) > 120:
             preview = preview[:120] + " ..."
