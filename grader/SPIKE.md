@@ -34,7 +34,7 @@ ALTER TABLE members
 CHECK (student_id NOT REGEXP '[^0-9]' AND CHAR_LENGTH(student_id) = 8)
 ```
 
-改完记得同步 `db/00_clean.sql`、`db/02_big.sql`、`solutions/part4_constraints.sql`、`part4-clean.md` 四处。
+改完记得同步 `db/00_clean.sql`、`db/02_big.sql`、`solutions/part4_constraints.sql`、`homework/part4-constraints.md` 四处。
 
 ## 3. 函数唯一索引
 
