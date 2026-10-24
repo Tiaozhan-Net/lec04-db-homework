@@ -8,5 +8,4 @@
 --    姓名 TRIM 后非空、分数 0-100、学号 8 位数字、专业白名单、班级 YYYY-N
 --
 -- 提示：MySQL 用 MODIFY COLUMN，没有 SET NOT NULL
--- 自查：mysql -u root -p --default-character-set=utf8mb4 -e "source db/99_check_part4.sql"
 

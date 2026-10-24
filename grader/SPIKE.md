@@ -34,4 +34,4 @@ grader/solutions 全参考解      必做 100 / 100，加分 10 / 10
 ## 版本口径
 
 本地是 8.0.44，所以 `docker-compose.yml` 和 CI 都钉在 `mysql:8.0.44`，
-不再写 8.0.36。文档里只要求学生 `MySQL 8.0`，`SELECT VERSION();` 自查。
+不再写 8.0.36。文档里要求学生 `MySQL 8.0`（推荐 8.0.44，最低 8.0.16），`SELECT VERSION();` 自查。

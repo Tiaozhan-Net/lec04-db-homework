@@ -2,7 +2,6 @@
 --
 -- 用法（在仓库根目录）：
 --   mysql -u root -p --default-character-set=utf8mb4 -e "source db/99_check_part4.sql"
--- Workbench 也可以直接打开这个文件执行。
 --
 -- 前提：hw_legacy 里已经跑过 part3/clean.sql 和 part4/constraints.sql。
 --

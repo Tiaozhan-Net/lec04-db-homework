@@ -17,12 +17,13 @@ grader/
 ## 本地跑
 
 ```powershell
-docker compose run --rm grader python grader/run.py --part 3
+docker compose run --rm grader python grader/run.py --part 3 --user 你的用户名
 ```
 
 或者本机（需要 Python 3.10+）：
 
 ```powershell
+$env:MYSQL_PASSWORD = "你的 root 密码"
 pip install -r grader/requirements.txt
 python grader/run.py --part 3 --user 你的用户名
 ```

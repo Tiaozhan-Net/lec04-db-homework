@@ -1,6 +1,6 @@
 -- 第 3 部分自查：把你本地的 hw_legacy 和「参考解洗出来的表」逐列对比。
 --
--- 用法（在仓库根目录，用命令行，不要用 Workbench）：
+-- 用法（在仓库根目录，用命令行）：
 --   mysql -u root -p --default-character-set=utf8mb4 -e "source db/99_check_part3.sql"
 --
 -- 前提：
